@@ -17,8 +17,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     public void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS Users (Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(50), Lastname VARCHAR(50), Age INT)";
 
-        try {
-            Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement();) {
             statement.executeUpdate(sql);
             System.out.println("Table Users was created. Status OK");
         } catch (SQLException e) {
@@ -29,8 +28,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS FirstDatabase.Users";
 
-        try {
-            Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement();) {
             statement.execute(sql);
             System.out.println("Table Users was deleted. Status OK");
         } catch (SQLException e) {
@@ -39,12 +37,9 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        PreparedStatement preparedStatement = null;
-
         String sql = "INSERT INTO FirstDatabase.Users (Name, Lastname, Age) VALUES (?, ?, ?)";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2,lastName);
             preparedStatement.setByte(3, age);
@@ -54,38 +49,17 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             System.out.println("User has been added to table USERS");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-
         }
     }
 
     public void removeUserById(long id) {
-        PreparedStatement preparedStatement = null;
-
         String sql = "DELETE FROM FirstDatabase.Users WHERE Id=?";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
@@ -94,10 +68,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
         String sql = "SELECT * FROM FirstDatabase.Users;";
 
-        Statement statement = null;
-
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement();) {
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
@@ -111,37 +82,18 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             }
         } catch (SQLException e) {
             System.out.println("Some sql ERROR " + e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return userList;
     }
 
     public void cleanUsersTable() {
-        PreparedStatement preparedStatement = null;
-
         String sql = "DELETE FROM FirstDatabase.Users";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 }
