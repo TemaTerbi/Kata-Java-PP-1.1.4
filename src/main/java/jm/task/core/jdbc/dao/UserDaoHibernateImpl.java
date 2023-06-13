@@ -4,6 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,8 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoHibernateImpl extends Util implements UserDao {
-    Connection connection = getConnection();
+public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
 
     }
@@ -20,25 +20,33 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
 
     @Override
     public void createUsersTable() {
+        Transaction transaction = null;
         String sql = "CREATE TABLE IF NOT EXISTS Users (Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(50), Lastname VARCHAR(50), Age INT)";
 
-        try (Statement statement = connection.createStatement();) {
-            statement.executeUpdate(sql);
+        try (Session session = Util.getSessionFactory().openSession();) {
+            transaction = session.beginTransaction();
+            Query query = session.createSQLQuery(sql).addEntity(User.class);
+            query.executeUpdate();
+            transaction.commit();
             System.out.println("Table Users was created. Status OK");
-        } catch (SQLException e) {
-            System.out.println("Error for creating Users Table " + e);
+        } catch (Exception e) {
+
         }
     }
 
     @Override
     public void dropUsersTable() {
-        String sql = "DROP TABLE IF EXISTS FirstDatabase.Users";
+        Transaction transaction = null;
+        String sql = "DROP TABLE IF EXISTS Users";
 
-        try (Statement statement = connection.createStatement();) {
-            statement.execute(sql);
+        try (Session session = Util.getSessionFactory().openSession();) {
+            transaction = session.beginTransaction();
+            Query query = session.createSQLQuery(sql).addEntity(User.class);
+            query.executeUpdate();
+            transaction.commit();
             System.out.println("Table Users was deleted. Status OK");
-        } catch (SQLException e) {
-            System.out.println("Error for delete Users Table " + e);
+        } catch (Exception e) {
+
         }
     }
 
@@ -63,7 +71,7 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
     @Override
     public void removeUserById(long id) {
         Transaction transaction = null;
-        Session session = getSessionFactory().getCurrentSession();
+        Session session = Util.getSessionFactory().getCurrentSession();
         try {
             transaction = session.beginTransaction();
             User user;
@@ -86,7 +94,7 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
     public List<User> getAllUsers() {
         Transaction transaction = null;
         List<User> userList = new ArrayList<>();
-        try (Session session = getSessionFactory().openSession()) {
+        try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             userList = session.createQuery("from User", User.class).list();
         } catch (Exception e) {
@@ -103,7 +111,7 @@ public class UserDaoHibernateImpl extends Util implements UserDao {
     @Override
     public void cleanUsersTable() {
         Transaction transaction = null;
-        try (Session session = getSessionFactory().openSession()) {
+        try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.createQuery("delete from User").executeUpdate();
             transaction.commit();
