@@ -1,6 +1,7 @@
-# Kata-Java-PP-1.1.4
-Задачка на создание небольших CRUD операций
+# Kata-Java-PP-1.1.5
+Задачка на создание небольших CRUD операций с помощиб Hibernate
 
 Все тесты прошли проверку: 
 
-<img width="1085" alt="Screenshot 2023-06-12 at 13 54 53" src="https://github.com/TemaTerbi/Kata-Java-PP-1.1.4/assets/85392692/7378eacd-1098-44e7-88af-47c1fba902eb">
+<img width="767" alt="Screenshot 2023-06-13 at 14 00 15" src="https://github.com/TemaTerbi/Kata-Java-PP-1.1.4/assets/85392692/dafe0e39-3326-462f-8461-b260cb90ad92">
+
