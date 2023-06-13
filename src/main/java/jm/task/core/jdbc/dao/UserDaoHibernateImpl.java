@@ -30,7 +30,9 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
             System.out.println("Table Users was created. Status OK");
         } catch (Exception e) {
-
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
@@ -46,7 +48,9 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.commit();
             System.out.println("Table Users was deleted. Status OK");
         } catch (Exception e) {
-
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
